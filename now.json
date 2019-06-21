@@ -2,11 +2,11 @@
   "version": 2,
   "name": "lol-team-match",
   "builds": [
-    { "src": "api/*.js", "use": "@now/node" },
+    { "src": "api/**/*.js", "use": "@now/node" },
     {
       "src": "web/package.json",
       "use": "@now/static-build",
-      "config": { "distDir": "web/build" }
+      "config": { "distDir": "build" }
     }
   ],
   "routes": [
@@ -14,25 +14,6 @@
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
-    {
-      "src": "/static/(.*)",
-      "headers": { "cache-control": "s-maxage=31536000,immutable" },
-      "dest": "/static/$1"
-    },
-    { "src": "/favicon.ico", "dest": "/favicon.ico" },
-    { "src": "/asset-manifest.json", "dest": "/asset-manifest.json" },
-    { "src": "/manifest.json", "dest": "/manifest.json" },
-    { "src": "/precache-manifest.(.*)", "dest": "/precache-manifest.$1" },
-    {
-      "src": "/service-worker.js",
-      "headers": { "cache-control": "s-maxage=0" },
-      "dest": "/service-worker.js"
-    },
-    { "src": "/sockjs-node/(.*)", "dest": "/sockjs-node/$1" },
-    {
-      "src": "/(.*)",
-      "headers": { "cache-control": "s-maxage=0" },
-      "dest": "/index.html"
-    }
+    { "src": "/(.*)", "dest": "/web/$1" }
   ]
 }

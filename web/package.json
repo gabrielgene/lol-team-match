@@ -18,6 +18,7 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "proxy": "https://lol-team-match.gabrielgene.now.sh",
   "browserslist": {
     "production": [
       ">0.2%",

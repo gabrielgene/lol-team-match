@@ -1,3 +1,9 @@
-module.exports = (req, res) => {
-  res.send(new Date().toString());
-};
+const express = require('express');
+
+const app = express();
+
+app.get('*', (req, res) => {
+  res.send({ date: new Date().toString() });
+});
+
+module.exports = app;
