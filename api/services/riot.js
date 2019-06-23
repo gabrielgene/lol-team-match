@@ -9,7 +9,7 @@ const API_URL_PROFILE_IMG =
 const API_KEY = 'RGAPI-c46c231d-cbe2-45c4-bcd6-370c67eac898';
 
 const getSummonerDataByUsername = async username => {
-  const result = await fetch(`${API_URL_SUMMONER}${username}`, {
+  const result = await fetch(`${API_URL_SUMMONER}${encodeURI(username)}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
