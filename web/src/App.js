@@ -4,14 +4,27 @@ import './App.css';
 
 class App extends React.Component {
   handleFetch = async () => {
-    const date = await fetch('/api/date.js').then(r => r.json());
-    const cookie = await fetch('/api/cookie.js').then(r => r.json());
+    const user = {
+      name: 'Gene',
+      user: 'gene',
+      pass: '123',
+      phone: '123',
+    };
+    const date = await (await fetch('/api/date.js')).json();
+    const cookie = await (await fetch('/api/cookie.js')).json();
     console.log(date);
     console.log(cookie);
   };
+
   componentDidMount() {
     this.handleFetch();
   }
+
+  getData = async () => {
+    const userData = await (await fetch('/api/user.js')).json();
+    console.log(userData);
+  };
+
   render() {
     return (
       <div className="App">
@@ -28,6 +41,7 @@ class App extends React.Component {
           >
             Learn React
           </a>
+          <button onClick={this.getData}>Obter dados</button>
         </header>
       </div>
     );
