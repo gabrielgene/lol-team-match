@@ -24,14 +24,14 @@ class App extends React.Component {
       name: 'Gene',
       user: 'gene',
       pass: '123',
-      phone: '123'
+      phone: '123',
     };
     const data = await (await fetch('/api/user.js', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(user)
+      body: JSON.stringify(user),
     })).json();
     console.log(data);
   };
