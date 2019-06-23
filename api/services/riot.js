@@ -20,7 +20,7 @@ const getSummonerDataByUsername = async username => {
   return result;
 };
 
-const getSummonerWinRate = async id => {
+const getSummonerRankedData = async id => {
   const result = await fetch(`${API_URL_RANKED}${id}`, {
     method: 'GET',
     headers: {
@@ -31,14 +31,23 @@ const getSummonerWinRate = async id => {
 
   const [rankedFlex, rankedSolo] = result;
 
+  return rankedSolo;
+};
+
+const getSummonerWinRate = async rankedSolo => {
   return calculateWinRate(rankedSolo.wins, rankedSolo.losses);
 };
 
-const getUserDataByUsername = async username => {
+export const getUserDataByUsername = async username => {
   const { id, profileIconId } = await getSummonerDataByUsername(username);
-  const winRate = await getSummonerWinRate(id);
+
+  const rankedSoloInfo = getSummonerRankedData(id);
+
+  const winRate = await getSummonerWinRate(rankedSoloInfo);
+
+  const { tier, rank } = rankedSoloInfo;
 
   const profilePicture = `${API_URL_PROFILE_IMG}${profileIconId}.png`;
 
-  return { username, winRate, profilePicture };
+  return { username, winRate, profilePicture, tier, rank };
 };
