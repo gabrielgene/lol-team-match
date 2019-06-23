@@ -4,12 +4,6 @@ import './App.css';
 
 class App extends React.Component {
   handleFetch = async () => {
-    const user = {
-      name: 'Gene',
-      user: 'gene',
-      pass: '123',
-      phone: '123',
-    };
     const date = await (await fetch('/api/date.js')).json();
     const cookie = await (await fetch('/api/cookie.js')).json();
     console.log(date);
@@ -23,6 +17,23 @@ class App extends React.Component {
   getData = async () => {
     const userData = await (await fetch('/api/user.js')).json();
     console.log(userData);
+  };
+
+  createData = async () => {
+    const user = {
+      name: 'Gene',
+      user: 'gene',
+      pass: '123',
+      phone: '123',
+    };
+    const data = await (await fetch('/api/user.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    })).json();
+    console.log(data);
   };
 
   render() {
@@ -42,6 +53,7 @@ class App extends React.Component {
             Learn React
           </a>
           <button onClick={this.getData}>Obter dados</button>
+          <button onClick={this.createData}>Criar dados</button>
         </header>
       </div>
     );
