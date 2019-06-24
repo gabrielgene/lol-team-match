@@ -1,31 +1,22 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const User = require('../db/models/user');
-const { validateRequest, errorHandler, dataNotFound } = require('../db/utils');
+const cookieParser = require('cookie-parser');
+const { validateRequest, errorHandler } = require('../utils/request');
+const Profile = require('../models/profile');
+const connect = require('../utils/db');
 
 const app = express();
-
-let cachedDb = null;
-async function connect() {
-  if (cachedDb) {
-    return cachedDb;
-  }
-  const con = await mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-  });
-  cachedDb = con;
-  return con;
-}
+app.use(cookieParser());
 
 app.post('*', async (req, res) => {
   validateRequest(req, res);
   await connect();
 
-  const model = new User(req.body);
+  const model = new Profile(req.body);
 
   model
     .save()
     .then(data => {
+      res.cookie('googleId', req.body.googleId, { maxAge: 9000000000 });
       res.send(data);
     })
     .catch(err => {
@@ -35,22 +26,11 @@ app.post('*', async (req, res) => {
 
 app.get('*', async (req, res) => {
   await connect();
+  const { googleId } = req.cookies;
 
-  User.find({})
+  Profile.findOne({ googleId })
     .then(user => {
       res.send(user);
-    })
-    .catch(err => {
-      errorHandler(err, res);
-    });
-});
-
-app.delete('*', async (req, res) => {
-  await connect();
-  User.findByIdAndRemove(req.params.id)
-    .then(data => {
-      dataNotFound(data, res);
-      res.send({ message: 'Model deleted successfully!' });
     })
     .catch(err => {
       errorHandler(err, res);

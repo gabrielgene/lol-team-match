@@ -1,5 +1,3 @@
-import { calculateWinRate } from '../utils';
-
 const API_URL_SUMMONER =
   'https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/';
 const API_URL_RANKED =
@@ -8,13 +6,19 @@ const API_URL_PROFILE_IMG =
   'http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/';
 const API_KEY = 'RGAPI-c46c231d-cbe2-45c4-bcd6-370c67eac898';
 
+export const calculateWinRate = (wins, losses) => {
+  const matches = wins + losses;
+
+  return (wins / matches) * 100;
+};
+
 const getSummonerDataByUsername = async username => {
   const result = await fetch(`${API_URL_SUMMONER}${encodeURI(username)}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'X-Riot-Token': API_KEY
-    }
+      'X-Riot-Token': API_KEY,
+    },
   });
 
   return result;
@@ -25,8 +29,8 @@ const getSummonerRankedData = async id => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'X-Riot-Token': API_KEY
-    }
+      'X-Riot-Token': API_KEY,
+    },
   });
 
   const [rankedFlex, rankedSolo] = result;
@@ -38,7 +42,7 @@ const getSummonerWinRate = async rankedSolo => {
   return calculateWinRate(rankedSolo.wins, rankedSolo.losses);
 };
 
-export const getUserDataByUsername = async username => {
+export const getRiotDataByUsername = async username => {
   const { id, profileIconId } = await getSummonerDataByUsername(username);
 
   const rankedSoloInfo = getSummonerRankedData(id);

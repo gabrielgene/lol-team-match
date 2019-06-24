@@ -1,10 +1,11 @@
 const express = require('express');
-import { getUserDataByUsername } from './services/riot.js';
+import { getRiotDataByUsername } from './utils/riot.js';
 
 const app = express();
 
 app.get('*', (req, res) => {
-  res.send({ user: getUserDataByUsername('Elton Jhin') });
+  const { username } = req.params;
+  res.send({ user: getRiotDataByUsername(username) });
 });
 
 module.exports = app;
