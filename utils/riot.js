@@ -1,53 +1,48 @@
+const axios = require('axios');
 const API_URL_SUMMONER =
   'https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/';
 const API_URL_RANKED =
   'https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/';
 const API_URL_PROFILE_IMG =
   'http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/';
-const API_KEY = 'RGAPI-c46c231d-cbe2-45c4-bcd6-370c67eac898';
+const API_KEY = 'RGAPI-fb7da8ae-3657-443e-a6ba-ddd59830aca9';
 
-export const calculateWinRate = (wins, losses) => {
+const calculateWinRate = (wins, losses) => {
   const matches = wins + losses;
 
   return (wins / matches) * 100;
 };
 
 const getSummonerDataByUsername = async username => {
-  const result = await fetch(`${API_URL_SUMMONER}${encodeURI(username)}`, {
-    method: 'GET',
+  const result = await axios.get(`${API_URL_SUMMONER}${encodeURI(username)}`, {
     headers: {
       'Content-Type': 'application/json',
       'X-Riot-Token': API_KEY,
     },
   });
-
-  return result;
+  return result.data;
 };
 
 const getSummonerRankedData = async id => {
-  const result = await fetch(`${API_URL_RANKED}${id}`, {
-    method: 'GET',
+  const result = await axios.get(`${API_URL_RANKED}${id}`, {
     headers: {
       'Content-Type': 'application/json',
       'X-Riot-Token': API_KEY,
     },
   });
-
-  const [rankedFlex, rankedSolo] = result;
+  const [rankedFlex, rankedSolo] = result.data;
 
   return rankedSolo;
 };
 
-const getSummonerWinRate = async rankedSolo => {
+const getSummonerWinRate = rankedSolo => {
   return calculateWinRate(rankedSolo.wins, rankedSolo.losses);
 };
 
-export const getRiotDataByUsername = async username => {
+const getRiotDataByUsername = async username => {
   const { id, profileIconId } = await getSummonerDataByUsername(username);
-
-  const rankedSoloInfo = getSummonerRankedData(id);
-
-  const winRate = await getSummonerWinRate(rankedSoloInfo);
+  const rankedSoloInfo = await getSummonerRankedData(id);
+  const winRate = getSummonerWinRate(rankedSoloInfo);
 
   const { tier, rank } = rankedSoloInfo;
 
@@ -55,3 +50,5 @@ export const getRiotDataByUsername = async username => {
 
   return { username, winRate, profilePicture, tier, rank };
 };
+
+module.exports = getRiotDataByUsername;

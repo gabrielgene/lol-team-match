@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Home from './pages/Home';
 import * as serviceWorker from './serviceWorker';
 import './index.css';
 
@@ -11,6 +12,7 @@ const App = () => (
     <React.Fragment>
       <Route exact path="/" component={Login} />
       <Route path="/register" component={Register} />
+      <Route path="/home" component={Home} />
     </React.Fragment>
   </Router>
 );

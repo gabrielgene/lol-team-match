@@ -1,17 +1,18 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const { validateRequest, errorHandler } = require('../utils/request');
-const Profile = require('../models/profile');
+const User = require('../models/user');
 const connect = require('../utils/db');
 
 const app = express();
 app.use(cookieParser());
 
 app.post('*', async (req, res) => {
+  console.log(req.body);
   validateRequest(req, res);
   await connect();
 
-  const model = new Profile(req.body);
+  const model = new User(req.body);
 
   model
     .save()
@@ -27,8 +28,9 @@ app.post('*', async (req, res) => {
 app.get('*', async (req, res) => {
   await connect();
   const { googleId } = req.cookies;
+  console.log(googleId);
 
-  Profile.findOne({ googleId })
+  User.findOne({})
     .then(user => {
       res.send(user);
     })

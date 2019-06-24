@@ -21,22 +21,50 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Register: React.FC<RouteComponentProps> = ({ location: { state } }) => {
+const Register: React.FC<RouteComponentProps> = ({
+  location: { state },
+  history,
+}) => {
   const classes = useStyles();
   const { googleId, email } = state;
   const [values, setValue] = React.useState({
-    name: '',
-    state: '',
-    role: '',
-    subRole: '',
-    champ: '',
+    name: 'elton jhin',
+    state: 'Bahia',
+    role: 'ADC',
+    subRole: 'MID',
+    champ: 'Jhin',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue({ ...values, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => console.log({ ...values, googleId, email });
+  const handleSubmit = async () => {
+    const data = await (await fetch(
+      `/api/profile.js?username=${values.name}`,
+    )).json();
+    const { username, winRate, tier, rank } = data.user;
+    const userData = {
+      ...values,
+      googleId,
+      email,
+      leagueInfo: {
+        username,
+        winRate,
+        tier,
+        rank,
+        champ: values.champ,
+      },
+    };
+    await (await fetch('/api/user.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    })).json();
+    history.push('/home');
+  };
 
   return (
     <form className={classes.root} noValidate autoComplete="off">
